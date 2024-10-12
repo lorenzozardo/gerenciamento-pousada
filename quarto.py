@@ -29,4 +29,4 @@ class Quarto:
     
     @diaria.setter
     def diaria(self, diaria):
-        self.__diaria = diaria
+        self.__diaria = diaria 

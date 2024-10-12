@@ -22,4 +22,4 @@ class Pousada:
 
     @contato.setter
     def contato(self, contato):
-        self.__contato = contato
+        self.__contato = contato 

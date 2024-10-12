@@ -48,4 +48,4 @@ class Reserva:
     
     @status.setter
     def status(self, status):
-        self.__status = status
+        self.__status = status 
