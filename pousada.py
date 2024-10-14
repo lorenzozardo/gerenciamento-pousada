@@ -108,3 +108,59 @@ class Pousada:
         # Caso ocorra um erro ao tentar salvar os dados de algum arquivo, exibe a mensagem de erro
         except:
             print("Erro ao salvar os dados.")
+
+
+# Métodos de consulta e gerenciamento
+    def consulta_disponibilidade(self, data: int, quarto: Quarto) -> bool:
+        """Verifica se o quarto está disponível para a data especificada."""
+        for reserva in self.__reservas:
+            if reserva.quarto == quarto and reserva.dia_inicio <= data <= reserva.dia_fim:
+                return False
+        return True
+
+    def consulta_reserva(self, data: int, cliente: str, quarto: Quarto) -> Reserva:
+        """Consulta uma reserva específica por data, cliente e quarto."""
+        for reserva in self.__reservas:
+            if reserva.quarto == quarto and reserva.cliente == cliente and reserva.dia_inicio <= data <= reserva.dia_fim:
+                return reserva
+        return None
+
+    def realiza_reserva(self, data_inicio: int, data_fim: int, cliente: str, quarto: Quarto) -> bool:
+        """Realiza uma reserva se o quarto estiver disponível no período solicitado."""
+        if self.consulta_disponibilidade(data_inicio, quarto):
+            nova_reserva = Reserva(data_inicio, data_fim, cliente, quarto, "ativa")
+            self.__reservas.append(nova_reserva)
+            print("Reserva realizada com sucesso.")
+            return True
+        print("Quarto indisponível para as datas selecionadas.")
+        return False
+
+    def cancela_reserva(self, cliente: str) -> bool:
+        """Cancela uma reserva do cliente."""
+        for reserva in self.__reservas:
+            if reserva.cliente == cliente and reserva.status == "ativa":
+                reserva.status = "cancelada"
+                print(f"Reserva de {cliente} cancelada.")
+                return True
+        print(f"Nenhuma reserva ativa encontrada para {cliente}.")
+        return False
+
+    def realiza_checkin(self, cliente: str) -> bool:
+        """Realiza o check-in do cliente se houver uma reserva ativa."""
+        for reserva in self.__reservas:
+            if reserva.cliente == cliente and reserva.status == "ativa":
+                reserva.status = "em andamento"
+                print(f"Check-in realizado para o cliente {cliente}.")
+                return True
+        print(f"Reserva ativa não encontrada para o cliente {cliente}.")
+        return False
+
+    def realiza_checkout(self, cliente: str) -> bool:
+        """Realiza o check-out do cliente e encerra a reserva."""
+        for reserva in self.__reservas:
+            if reserva.cliente == cliente and reserva.status == "em andamento":
+                reserva.status = "concluída"
+                print(f"Check-out realizado para o cliente {cliente}.")
+                return True
+        print(f"Check-out não pode ser realizado. Reserva em andamento não encontrada para {cliente}.")
+        return False
