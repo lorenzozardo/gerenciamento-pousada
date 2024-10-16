@@ -4,102 +4,136 @@
 from pousada import Pousada
 from quarto import Quarto
 from reserva import Reserva
-
-def exibir_menu():
-    print("\nMenu:")
-    print("1 - Consultar disponibilidade")
-    print("2 - Consultar reserva")
-    print("3 - Realizar reserva")
-    print("4 - Cancelar reserva")
-    print("5 - Realizar check-in")
-    print("6 - Realizar check-out")
-    print("0 - Sair")
+from produto import Produto
 
 def main():
-    # Inicializando a pousada com dados fictícios (ou carregue de arquivo usando `carrega_dados`)
-    pousada = Pousada("Pousada do Sol", "contato@pousadasol.com")
-    
+    pousada = Pousada()
+    pousada.carrega_dados()
+
     while True:
-        exibir_menu()
+        print("\nMenu:")
+        print("1 - Consultar disponibilidade")
+        print("2 - Consultar reserva")
+        print("3 - Realizar reserva")
+        print("4 - Cancelar reserva")
+        print("5 - Realizar check-in")
+        print("6 - Realizar check-out")
+        print("7 - Registrar consumo")
+        print("8 - Salvar")
+        print("0 - Sair")
+
         opcao = input("Escolha uma opção: ")
 
         if opcao == "1":
-            # Consultar disponibilidade
-            data = int(input("Informe a data (em formato de número inteiro): "))
+            data = input("Informe a data (YYYY-MM-DD): ")
             numero_quarto = int(input("Informe o número do quarto: "))
-            quarto = next((q for q in pousada.quartos if q.numero == numero_quarto), None)
-            if quarto:
-                disponibilidade = pousada.consulta_disponibilidade(data, quarto)
-                if disponibilidade:
-                    print(f"O quarto {numero_quarto} está disponível na data {data}.")
+            
+            if pousada.consulta_disponibilidade(data, numero_quarto):
+                quarto = None
+                for q in pousada.quartos:
+                    if q.numero == numero_quarto:
+                        quarto = q
+                        break
+                
+                if quarto:
+                    print(f"Quarto {quarto.numero}, Categoria: {quarto.categoria}, Diária: {quarto.diaria}")
                 else:
-                    print(f"O quarto {numero_quarto} está indisponível na data {data}.")
+                    print("Quarto não encontrado.")
             else:
-                print("Quarto não encontrado.")
+                print("Quarto indisponível na data informada.")
 
         elif opcao == "2":
-            # Consultar reserva
-            data = int(input("Informe a data (em formato de número inteiro): "))
-            cliente = input("Informe o nome do cliente: ")
-            numero_quarto = int(input("Informe o número do quarto: "))
-            quarto = next((q for q in pousada.quartos if q.numero == numero_quarto), None)
-            if quarto:
-                reserva = pousada.consulta_reserva(data, cliente, quarto)
-                if reserva:
-                    print(f"Reserva encontrada: Cliente {reserva.cliente}, "
-                          f"Quarto {reserva.quarto.numero}, "
-                          f"Período: {reserva.dia_inicio} a {reserva.dia_fim}, Status: {reserva.status}.")
-                else:
-                    print("Nenhuma reserva encontrada para os dados fornecidos.")
+            data = input("Informe uma data (YYYY-MM-DD) ou deixe em branco: ")
+            cliente = input("Informe o nome do cliente ou deixe em branco: ")
+            numero_quarto = input("Informe o número do quarto ou deixe em branco: ")
+
+            reservas = []
+            for reserva in pousada.reservas:
+                if ((data == "" or reserva.dia_inicio <= data <= reserva.dia_fim) and
+                    (cliente == "" or reserva.cliente == cliente) and
+                    (numero_quarto == "" or reserva.quarto.numero == int(numero_quarto))):
+                    reservas.append(reserva)
+
+            if reservas:
+                for reserva in reservas:
+                    print(f"Reserva de {reserva.cliente} - Início: {reserva.dia_inicio}, Fim: {reserva.dia_fim}, Quarto: {reserva.quarto.numero}, Status: {reserva.status}")
             else:
-                print("Quarto não encontrado.")
+                print("Nenhuma reserva encontrada.")
 
         elif opcao == "3":
-            # Realizar reserva
-            data_inicio = int(input("Informe a data de início: "))
-            data_fim = int(input("Informe a data de fim: "))
+            data_inicio = input("Informe a data de início (YYYY-MM-DD): ")
+            data_fim = input("Informe a data de fim (YYYY-MM-DD): ")
             cliente = input("Informe o nome do cliente: ")
             numero_quarto = int(input("Informe o número do quarto: "))
-            quarto = next((q for q in pousada.quartos if q.numero == numero_quarto), None)
+
+            quarto = None
+            for q in pousada.quartos:
+                if q.numero == numero_quarto:
+                    quarto = q
+                    break
+
             if quarto:
-                sucesso = pousada.realiza_reserva(data_inicio, data_fim, cliente, quarto)
-                if sucesso:
-                    print(f"Reserva realizada com sucesso para o cliente {cliente}.")
-                else:
-                    print(f"Não foi possível realizar a reserva para o cliente {cliente}.")
+                if pousada.realiza_reserva(data_inicio, data_fim, cliente, quarto):
+                    print("Reserva realizada com sucesso.")
             else:
                 print("Quarto não encontrado.")
 
         elif opcao == "4":
-            # Cancelar reserva
             cliente = input("Informe o nome do cliente: ")
-            sucesso = pousada.cancela_reserva(cliente)
-            if sucesso:
-                print(f"Reserva do cliente {cliente} cancelada com sucesso.")
+            if pousada.cancela_reserva(cliente):
+                print("Reserva cancelada com sucesso.")
             else:
-                print(f"Não foi possível cancelar a reserva do cliente {cliente}.")
+                print("Nenhuma reserva ativa encontrada.")
 
         elif opcao == "5":
-            # Realizar check-in
             cliente = input("Informe o nome do cliente: ")
-            sucesso = pousada.realiza_checkin(cliente)
-            if sucesso:
-                print(f"Check-in realizado para o cliente {cliente}.")
+            if pousada.realiza_checkin(cliente):
+                print("Check-in realizado com sucesso.")
             else:
-                print(f"Não foi possível realizar o check-in do cliente {cliente}.")
+                print("Nenhuma reserva ativa encontrada.")
 
         elif opcao == "6":
-            # Realizar check-out
             cliente = input("Informe o nome do cliente: ")
-            sucesso = pousada.realiza_checkout(cliente)
-            if sucesso:
-                print(f"Check-out realizado para o cliente {cliente}.")
+            if pousada.realiza_checkout(cliente):
+                print("Check-out realizado com sucesso.")
             else:
-                print(f"Não foi possível realizar o check-out do cliente {cliente}.")
+                print("Nenhuma reserva em check-in encontrada.")
+
+        elif opcao == "7":
+            cliente = input("Informe o nome do cliente: ")
+
+            if pousada.realiza_checkin(cliente):
+                print("Produtos disponíveis na copa:")
+                for produto in pousada.produtos:
+                    print(f"{produto.codigo} - {produto.nome}: R${produto.preco}")
+
+                codigo_produto = int(input("Informe o código do produto desejado: "))
+
+                # Verifica se o código do produto existe
+                if codigo_produto in [produto.codigo for produto in pousada.produtos]:
+                    quarto = None
+                    for q in pousada.quartos:
+                        if q.numero == cliente.quarto:
+                            quarto = q
+                            break
+                    
+                    if quarto:
+                        quarto.adiciona_consumo(codigo_produto)
+                        print("Consumo registrado.")
+                    else:
+                        print("Quarto não encontrado.")
+                else:
+                    print("Produto não encontrado.")
+            else:
+                print("Nenhuma reserva ativa encontrada.")
+
+        elif opcao == "8":
+            pousada.salva_dados("pousada.txt", "quarto.txt", "reserva.txt", "produto.txt")
+            print("Dados salvos com sucesso.")
 
         elif opcao == "0":
-            # Sair
-            print("Encerrando o programa...")
+            print("Saindo do sistema...")
+            pousada.salva_dados("pousada.txt", "quarto.txt", "reserva.txt", "produto.txt")
             break
 
         else:

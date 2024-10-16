@@ -28,4 +28,7 @@ class Produto:
     
     @preco.setter
     def preco(self, preco):
-        self.__preco = preco 
+        self.__preco = preco
+
+    def __self__(self):
+        return f"{self.codigo},{self.nome},{self.preco}"

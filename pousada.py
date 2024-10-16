@@ -5,7 +5,7 @@ from reserva import Reserva
 from produto import Produto
 
 class Pousada:
-    def __init__(self, nome: str, contato: str):
+    def __init__(self, nome: str = "", contato: str = ""):
         self.__nome = nome
         self.__contato = contato
         self.__quartos = []
@@ -28,16 +28,20 @@ class Pousada:
     def contato(self, contato):
         self.__contato = contato 
 
+    @property
+    def quartos(self):
+        return self.__quartos
+
     # Carrega os dados da pousada, seus quartos, reservas e produtos, a partir de arquivos .txt
-    def carrega_dados(self, arquivo_pousada: str, arquivo_quartos: str, arquivo_reservas: str, arquivo_produtos: str):
+    def carrega_dados(self):
         try:
             # Carrega os dados da pousada
-            with open(arquivo_pousada, "r") as f:
+            with open("pousada.txt", "r", encoding="utf-8") as f:
                 self.__nome = f.readline()
                 self.__contato = f.readline()
 
             # Carrega os dados dos quartos
-            with open(arquivo_quartos, "r") as f:
+            with open("quarto.txt", "r", encoding="utf-8") as f:
                 for linha in f:
                     dados_quarto = linha.split(";")
 
@@ -45,11 +49,11 @@ class Pousada:
                     categoria = dados_quarto[1]
                     diaria = float(dados_quarto[2])
 
-                    quarto = Quarto(numero, categoria, diaria)
+                    quarto = Quarto(numero, categoria, diaria, consumo=list)
                     self.__quartos.append(quarto)
 
             # Carrega os dados das reservas
-            with open(arquivo_reservas, "r") as f:
+            with open("reserva.txt", "r", encoding="utf-8") as f:
                 for linha in f:
                     dados_reservas = linha.split(";")
 
@@ -63,7 +67,7 @@ class Pousada:
                     self.__reservas.append(reserva)
 
             # Carrega os dados das produtos
-            with open(arquivo_produtos, "r") as f:
+            with open("produto.txt", "r", encoding="utf-8") as f:
                 for linha in f:
                     dados_produtos = linha.split(";")
 
@@ -78,7 +82,8 @@ class Pousada:
 
         # Caso ocorra um erro ao carregar os dados de algum arquivo, exibe a mensagem de erro
         except:
-            print("Erro ao carregar os dados.")
+            print(f"Erro ao carregar os dados.")
+
 
     # Salva os dados da pousada, seus quartos, reservas e produtos em arquivos .txt
     def salva_dados(self, arquivo_pousada: str, arquivo_quartos: str, arquivo_reservas: str, arquivo_produtos: str):
@@ -109,58 +114,58 @@ class Pousada:
         except:
             print("Erro ao salvar os dados.")
 
-
-# Métodos de consulta e gerenciamento
-    def consulta_disponibilidade(self, data: int, quarto: Quarto) -> bool:
-        """Verifica se o quarto está disponível para a data especificada."""
+    # Verifica se o quarto está disponível para uma data específica
+    def consulta_disponibilidade(self, data, numero_quarto):
         for reserva in self.__reservas:
-            if reserva.quarto == quarto and reserva.dia_inicio <= data <= reserva.dia_fim:
+            if reserva.quarto().numero_quarto() == numero_quarto and reserva.dia_inicio() <= data <= reserva.dia_fim():
                 return False
         return True
 
-    def consulta_reserva(self, data: int, cliente: str, quarto: Quarto) -> Reserva:
-        """Consulta uma reserva específica por data, cliente e quarto."""
+    # Consulta uma reserva específica por data, cliente e quarto
+    def consulta_reserva(self, data: int, cliente: str, quarto: Quarto):
         for reserva in self.__reservas:
-            if reserva.quarto == quarto and reserva.cliente == cliente and reserva.dia_inicio <= data <= reserva.dia_fim:
+            if reserva.quarto == quarto and reserva.cliente == cliente and data >= reserva.data_inicio and data <= reserva.data_fim:
                 return reserva
         return None
 
-    def realiza_reserva(self, data_inicio: int, data_fim: int, cliente: str, quarto: Quarto) -> bool:
-        """Realiza uma reserva se o quarto estiver disponível no período solicitado."""
+    # Realiza uma reserva se o quarto estiver disponível no período solicitado
+    def realiza_reserva(self, data_inicio: int, data_fim: int, cliente: str, quarto: Quarto):
         if self.consulta_disponibilidade(data_inicio, quarto):
-            nova_reserva = Reserva(data_inicio, data_fim, cliente, quarto, "ativa")
+            nova_reserva = Reserva(data_inicio, data_fim, cliente, quarto, "A")
             self.__reservas.append(nova_reserva)
-            print("Reserva realizada com sucesso.")
+            print("Reserva realizada com sucesso!")
             return True
+        
         print("Quarto indisponível para as datas selecionadas.")
         return False
 
-    def cancela_reserva(self, cliente: str) -> bool:
-        """Cancela uma reserva do cliente."""
+    # Cancela uma reserva do cliente
+    def cancela_reserva(self, cliente: str):
         for reserva in self.__reservas:
-            if reserva.cliente == cliente and reserva.status == "ativa":
-                reserva.status = "cancelada"
+            if reserva.cliente == cliente and reserva.status == "A":
+                reserva.status = "C"
                 print(f"Reserva de {cliente} cancelada.")
                 return True
         print(f"Nenhuma reserva ativa encontrada para {cliente}.")
         return False
 
-    def realiza_checkin(self, cliente: str) -> bool:
-        """Realiza o check-in do cliente se houver uma reserva ativa."""
+    # Realiza o check-in do cliente se houver uma reserva ativa
+    def realiza_checkin(self, cliente: str):
         for reserva in self.__reservas:
-            if reserva.cliente == cliente and reserva.status == "ativa":
-                reserva.status = "em andamento"
-                print(f"Check-in realizado para o cliente {cliente}.")
+            if reserva.cliente == cliente and reserva.status == "A":
+                reserva.status = "I"
+                print(f"Check-in realizado para o cliente {cliente}!")
                 return True
-        print(f"Reserva ativa não encontrada para o cliente {cliente}.")
+            
+        print(f"Erro! Cliente {cliente} não possui nenhuma reserva ativa.")
         return False
 
-    def realiza_checkout(self, cliente: str) -> bool:
-        """Realiza o check-out do cliente e encerra a reserva."""
+    # Realiza o check-out do cliente e encerra a reserva
+    def realiza_checkout(self, cliente: str):
         for reserva in self.__reservas:
-            if reserva.cliente == cliente and reserva.status == "em andamento":
-                reserva.status = "concluída"
-                print(f"Check-out realizado para o cliente {cliente}.")
+            if reserva.cliente == cliente and reserva.status == "I":
+                reserva.status = "O"
+                print(f"Check-out do cliente {cliente} realizado com sucesso!")
                 return True
-        print(f"Check-out não pode ser realizado. Reserva em andamento não encontrada para {cliente}.")
+        print(f"Check-out do cliente {cliente} não pode ser realizado.")
         return False

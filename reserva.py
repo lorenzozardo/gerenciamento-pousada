@@ -48,4 +48,7 @@ class Reserva:
     
     @status.setter
     def status(self, status):
-        self.__status = status 
+        self.__status = status
+
+    def __str__(self):
+        return f"{self.__inicio},{self.__fim},{self.__cliente},{self.__quarto.get_numero()},{self.__status}"

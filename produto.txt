@@ -1,0 +1,4 @@
+1;Refrigerante;7.99
+2;Água;3.99
+3;Pão de Queijo;4.99
+4;Sanduíche;8.99
