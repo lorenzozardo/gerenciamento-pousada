@@ -29,6 +29,10 @@ class Pousada:
     def contato(self, contato):
         self.__contato = contato 
 
+    @property
+    def quartos(self):
+        return self.__quartos
+
     # Carrega os dados da pousada, seus quartos, reservas e produtos, a partir de arquivos .txt
     def carrega_dados(self):
         try:
@@ -88,7 +92,7 @@ class Pousada:
             with open("reserva.txt", "w", encoding="utf-8") as f:
              f.writelines(novas_linhas)
 
-            print(f"Linhas que terminam com 'C' ou 'O' foram removidas de {nome_arquivo} com sucesso!")
+            print(f"Reservas canceladas ou com Check-out foram removidas de {nome_arquivo} com sucesso!")
 
         except Exception as e:
          print(f"Erro ao tentar modificar o arquivo: {e}")
@@ -115,14 +119,14 @@ class Pousada:
         if self.consulta_disponibilidade(data_inicio, quarto):
             nova_reserva = Reserva(data_inicio, data_fim, cliente, quarto, "A")
             self.__reservas.append(nova_reserva)
-            
+
             with open("reserva.txt", "a") as arquivo:
-                linha = f"{data_inicio};{data_fim};{cliente};{quarto.numero};A"
+                linha = f"\n{data_inicio};{data_fim};{cliente};{quarto.numero};A"
                 arquivo.write(linha)
-            
+
             print("Reserva realizada com sucesso!")
             return True
-        
+
         print("Quarto indisponível para as datas selecionadas.")
         return False
 
@@ -149,7 +153,7 @@ class Pousada:
         if reserva_encontrada:
             with open("reserva.txt", "w") as arquivo:
                 arquivo.writelines(reservas_atualizadas)
-            print(f"Reserva de {cliente} cancelada com sucesso!")
+            print(f"Check-in de {cliente} realizado com sucesso!")
             return True
         else:
             print(f"Reserva ativa para {cliente} não encontrada.")
@@ -214,7 +218,7 @@ class Pousada:
             print(f"Check-in ativo para {cliente} não encontrada.")
             return False
         
-
+    # Verifica o check-in e mostra as opções 
     def registra_consumo(self, cliente):
 
         reservas_atualizadas = []
@@ -229,7 +233,6 @@ class Pousada:
             status = dados[4]
             
             if nome_cliente == cliente and status == "I":
-                dados[4] = "O"
                 reserva_encontrada = True
 
             linha_atualizada = ";".join(dados)+"\n"
@@ -245,3 +248,7 @@ class Pousada:
         else:
             print(f"Check-in ativo para {cliente} não encontrada.")
             return False
+
+    # Metodo de dados da pousada    
+    def __str__(self):
+        return f"{self.__nome}{self.__contato}"      

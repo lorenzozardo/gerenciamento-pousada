@@ -20,7 +20,7 @@ def main():
     pousada = Pousada()
     pousada.carrega_dados()
 
-    print(f"\nBem-vindo à {pousada.nome}{pousada.contato}")
+    print(f"\nBem-vindo à {pousada.__str__()}")
 
     while True:
         exibir_menu()
@@ -43,11 +43,19 @@ def main():
             data_fim = input("Informe a data final (DD/MM/AAAA): ")
             cliente = input("Informe o nome do cliente: ")
             numero_quarto = int(input("Informe o número do quarto: "))
-            quarto = next((q for q in pousada.quartos if q.numero == numero_quarto), None)
+            quarto = None
+            for q in pousada.quartos:
+                if q.numero == numero_quarto:
+                   quarto = q
+                   break 
             if quarto:
                 pousada.realiza_reserva(data_inicio, data_fim, cliente, quarto)
             else:
                 print("Quarto não encontrado.")
+                if quarto:
+                    pousada.realiza_reserva(data_inicio, data_fim, cliente, quarto)
+                else:
+                    print("Quarto não encontrado.")
 
         elif opcao == "4":
             cliente = input("Informe o nome do cliente: ")
@@ -63,16 +71,14 @@ def main():
 
         elif opcao == "7":
             cliente = input("Informe o nome do cliente: ")
-            pousada.registra_consumo(cliente)#, produto, quantidade
-            #produto = input("Informe o nome do produto: ")
-            #quantidade = int(input("Informe a quantidade: "))
+            pousada.registra_consumo(cliente)
 
         elif opcao == "8":
             pousada.Salva_dados()
 
         elif opcao == "0":
             print("Salvando dados antes de sair...")
-            pousada.Salva_dados("pousada.txt", "quarto.txt", "reserva.txt", "produto.txt")
+            pousada.Salva_dados()
             print("Encerrando o sistema. Até logo!")
             break
 
