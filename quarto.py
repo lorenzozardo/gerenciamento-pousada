@@ -1,6 +1,7 @@
 # Lorenzo Zardo Danzmann e João Victor Cardoso Barbosa
 
 class Quarto:
+    # Método construtor do quarto
     def __init__(self, numero: int, categoria: str, diaria: float, consumo: list):
         self.__numero = numero
         self.__categoria = categoria
@@ -43,7 +44,7 @@ class Quarto:
     def adiciona_consumo(self, produto: int):
         self.__consumo.append(produto)
 
-    # Retorna a lista de produtos consumidos
+    
     def lista_consumo(self):
         return self.__consumo
 

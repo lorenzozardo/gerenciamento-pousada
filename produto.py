@@ -1,6 +1,7 @@
 # Lorenzo Zardo Danzmann e João Victor Cardoso Barbosa
 
 class Produto:
+    # Método construtor do Produto
     def __init__(self, codigo: int, nome: str, preco: float):
         self.__codigo = codigo
         self.__nome = nome

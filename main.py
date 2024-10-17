@@ -1,5 +1,7 @@
+# Lorenzo Zardo Danzmann e João Victor Cardoso Barbosa
 from pousada import Pousada
 
+# Menu printado
 def exibir_menu():
     print("\nMenu:")
     print("1 - Consultar disponibilidade")
@@ -12,6 +14,8 @@ def exibir_menu():
     print("8 - Salvar")
     print("0 - Sair")
 
+
+# Função principal que gerencia o sistema, interagindo com o menu printado
 def main():
     pousada = Pousada()
     pousada.carrega_dados()
@@ -31,10 +35,8 @@ def main():
                 print("Quarto não disponível.")
 
         elif opcao == "2":
-            data = input("Informe a data (DD/MM/AAAA): ")
             cliente = input("Informe o nome do cliente: ")
-            numero_quarto = int(input("Informe o número do quarto: "))
-            pousada.consulta_reserva(data, cliente, numero_quarto)
+            pousada.consulta_reserva(cliente)
 
         elif opcao == "3":
             data_inicio = input("Informe a data inicial (DD/MM/AAAA): ")
@@ -66,12 +68,11 @@ def main():
             pousada.registra_consumo(cliente, produto, quantidade)
 
         elif opcao == "8":
-            pousada.salva_dados()
-            print("Dados salvos com sucesso.")
+            pousada.Salva_dados()
 
         elif opcao == "0":
             print("Salvando dados antes de sair...")
-            pousada.salva_dados("pousada.txt", "quarto.txt", "reserva.txt", "produto.txt")
+            pousada.Salva_dados("pousada.txt", "quarto.txt", "reserva.txt", "produto.txt")
             print("Encerrando o sistema. Até logo!")
             break
 

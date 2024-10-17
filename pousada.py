@@ -5,6 +5,7 @@ from reserva import Reserva
 from produto import Produto
 
 class Pousada:
+    # Método construtor de Pousada
     def __init__(self, nome: str = "", contato: str = ""):
         self.__nome = nome
         self.__contato = contato
@@ -28,19 +29,13 @@ class Pousada:
     def contato(self, contato):
         self.__contato = contato 
 
-    @property
-    def quartos(self):
-        return self.__quartos
-
     # Carrega os dados da pousada, seus quartos, reservas e produtos, a partir de arquivos .txt
     def carrega_dados(self):
         try:
-            # Carrega os dados da pousada
             with open("pousada.txt", "r", encoding="utf-8") as f:
                 self.__nome = f.readline()
                 self.__contato = f.readline()
 
-            # Carrega os dados dos quartos
             with open("quarto.txt", "r", encoding="utf-8") as f:
                 for linha in f:
                     dados_quarto = linha.split(";")
@@ -52,7 +47,6 @@ class Pousada:
                     quarto = Quarto(numero, categoria, diaria, consumo=list)
                     self.__quartos.append(quarto)
 
-            # Carrega os dados das reservas
             with open("reserva.txt", "r", encoding="utf-8") as f:
                 for linha in f:
                     dados_reservas = linha.split(";")
@@ -66,7 +60,6 @@ class Pousada:
                     reserva = Reserva(dia_inicio, dia_fim, cliente, categoria_quarto, status)
                     self.__reservas.append(reserva)
 
-            # Carrega os dados das produtos
             with open("produto.txt", "r", encoding="utf-8") as f:
                 for linha in f:
                     dados_produtos = linha.split(";")
@@ -80,39 +73,26 @@ class Pousada:
 
             print("Dados carregados com sucesso!")
 
-        # Caso ocorra um erro ao carregar os dados de algum arquivo, exibe a mensagem de erro
         except:
             print(f"Erro ao carregar os dados.")
 
 
-    # Salva os dados da pousada, seus quartos, reservas e produtos em arquivos .txt
-    def salva_dados(self):
+    # Salva os dados da pousada em arquivos .txt
+    def Salva_dados(nome_arquivo):
         try:
-            # Salva os dados da pousada
-            with open("pousada.txt", "w", encoding="utf-8") as f:
-                f.write(f"{self.__nome}")
-                f.write(f"{self.__contato}")
+            with open("reserva.txt", "r", encoding="utf-8") as f:
+             linhas = f.readlines()
 
-            # Salva os dados dos quartos
-            with open("quarto.txt", "w", encoding="utf-8") as f:
-                for quarto in self.__quartos:
-                    f.write(f"{quarto.numero};{quarto.categoria};{quarto.diaria}\n")
+             novas_linhas = [linha for linha in linhas if not linha.strip().endswith(("C", "O"))]
 
-            # Salva os dados das reservas
             with open("reserva.txt", "w", encoding="utf-8") as f:
-                for reserva in self.__reservas:
-                    f.write(f"{reserva.dia_inicio};{reserva.dia_fim};{reserva.cliente};{reserva.quarto.numero};{reserva.status}\n")
+             f.writelines(novas_linhas)
 
-            # Salva os dados dos produtos
-            with open("produto.txt", "w", encoding="utf-8") as f:
-                for produto in self.__produtos:
-                    f.write(f"{produto.codigo};{produto.nome};{produto.preco}\n")
-        
-            print("Dados salvos com sucesso!")
+            print(f"Linhas que terminam com 'C' ou 'O' foram removidas de {nome_arquivo} com sucesso!")
 
-        # Caso ocorra um erro ao tentar salvar os dados de algum arquivo, exibe a mensagem de erro
-        except:
-            print("Erro ao salvar os dados.")
+        except Exception as e:
+         print(f"Erro ao tentar modificar o arquivo: {e}")
+
 
     # Verifica se o quarto está disponível para uma data específica
     def consulta_disponibilidade(self, data, numero_quarto):
@@ -122,11 +102,13 @@ class Pousada:
         return True
 
     # Consulta uma reserva específica por data, cliente e quarto
-    def consulta_reserva(self, data: int, cliente: str, quarto: Quarto):
+    def consulta_reserva(self, cliente: str):
         for reserva in self.__reservas:
-            if reserva.quarto == quarto and reserva.cliente == cliente and data >= reserva.data_inicio and data <= reserva.data_fim:
-                return reserva
-        return None
+            if reserva.cliente == cliente:
+                print("")
+                print(reserva.dia_inicio + " " + reserva.dia_fim+" "+reserva.cliente+" "+str(reserva.quarto)+" "+reserva.status)
+            elif reserva.cliente != cliente:
+                print("", end="")
 
     # Realiza uma reserva se o quarto estiver disponível no período solicitado
     def realiza_reserva(self, data_inicio: int, data_fim: int, cliente: str, quarto: Quarto):
@@ -229,5 +211,5 @@ class Pousada:
             print(f"Check-out de {cliente} realizado com sucesso!")
             return True
         else:
-            print(f"Reserva ativa para {cliente} não encontrada.")
+            print(f"Check-in ativo para {cliente} não encontrada.")
             return False

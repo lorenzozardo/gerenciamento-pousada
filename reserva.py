@@ -3,6 +3,7 @@
 from quarto import Quarto
 
 class Reserva:
+    # Método construtor da Reserva
     def __init__(self, dia_inicio: int, dia_fim: int, cliente: str, quarto: Quarto, status: str):
         self.__dia_inicio = dia_inicio
         self.__dia_fim = dia_fim
@@ -49,6 +50,7 @@ class Reserva:
     @status.setter
     def status(self, status):
         self.__status = status
-
+    
+    # Retorna uma string com os detalhes da reserva: datas, cliente, quarto e status
     def __str__(self):
-        return f"{self.__inicio},{self.__fim},{self.__cliente},{self.__quarto.get_numero()},{self.__status}"
+        return f"{self.__dia_inicio},{self.__dia_fim},{self.__cliente},{self.__quarto.numero},{self.__status}"
