@@ -86,27 +86,27 @@ class Pousada:
 
 
     # Salva os dados da pousada, seus quartos, reservas e produtos em arquivos .txt
-    def salva_dados(self, arquivo_pousada: str, arquivo_quartos: str, arquivo_reservas: str, arquivo_produtos: str):
+    def salva_dados(self):
         try:
             # Salva os dados da pousada
-            with open(arquivo_pousada, "w") as f:
+            with open("pousada.txt", "w", encoding="utf-8") as f:
                 f.write(f"{self.__nome}")
                 f.write(f"{self.__contato}")
 
             # Salva os dados dos quartos
-            with open(arquivo_quartos, "w") as f:
+            with open("quarto.txt", "w", encoding="utf-8") as f:
                 for quarto in self.__quartos:
-                    f.write(f"{quarto.numero()};{quarto.categoria()};{quarto.diaria()}")
+                    f.write(f"{quarto.numero};{quarto.categoria};{quarto.diaria}\n")
 
             # Salva os dados das reservas
-            with open(arquivo_reservas, "w") as f:
+            with open("reserva.txt", "w", encoding="utf-8") as f:
                 for reserva in self.__reservas:
-                    f.write(f"{reserva.dia_inicio()};{reserva.dia_fim()};{reserva.cliente()};{reserva.quarto()};{reserva.status()}")
+                    f.write(f"{reserva.dia_inicio};{reserva.dia_fim};{reserva.cliente};{reserva.quarto.numero};{reserva.status}\n")
 
             # Salva os dados dos produtos
-            with open(arquivo_produtos, "w") as f:
+            with open("produto.txt", "w", encoding="utf-8") as f:
                 for produto in self.__produtos:
-                    f.write(f"{produto.codigo()};{produto.nome()};{produto.preco()}")
+                    f.write(f"{produto.codigo};{produto.nome};{produto.preco}\n")
         
             print("Dados salvos com sucesso!")
 

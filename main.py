@@ -66,7 +66,7 @@ def main():
             pousada.registra_consumo(cliente, produto, quantidade)
 
         elif opcao == "8":
-            pousada.salva_dados("pousada.txt", "quarto.txt", "reserva.txt", "produto.txt")
+            pousada.salva_dados()
             print("Dados salvos com sucesso.")
 
         elif opcao == "0":
