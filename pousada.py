@@ -90,8 +90,8 @@ class Pousada:
         try:
             # Salva os dados da pousada
             with open(arquivo_pousada, "w") as f:
-                f.write(f"{self.__nome}\n")
-                f.write(f"{self.__contato}\n")
+                f.write(f"{self.__nome}")
+                f.write(f"{self.__contato}")
 
             # Salva os dados dos quartos
             with open(arquivo_quartos, "w") as f:
@@ -117,7 +117,7 @@ class Pousada:
     # Verifica se o quarto está disponível para uma data específica
     def consulta_disponibilidade(self, data, numero_quarto):
         for reserva in self.__reservas:
-            if reserva.quarto().numero_quarto() == numero_quarto and reserva.dia_inicio() <= data <= reserva.dia_fim():
+            if reserva.quarto == numero_quarto and reserva.dia_inicio <= data <= reserva.dia_fim:
                 return False
         return True
 

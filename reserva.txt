@@ -1,4 +1,4 @@
-2024-10-14;2024-10-20;Pedro da Silva;1;AC
-2024-10-23;2024-10-27;Lucas Pinheiro;2;I
-2024-10-22;2024-10-24;Maria Soares;1;C
-2024-10-15;2024-10-17;Isabela Souza;3;O
+14/10/2024;2024-10-20;Pedro da Silva;1;A
+23/10/2024;2024-10-27;Lucas Pinheiro;2;I
+22/10/2024;2024-10-24;Maria Soares;1;C
+15/10/2024;2024-10-17;Isabela Souza;3;O
