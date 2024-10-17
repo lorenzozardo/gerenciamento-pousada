@@ -63,9 +63,9 @@ def main():
 
         elif opcao == "7":
             cliente = input("Informe o nome do cliente: ")
-            produto = input("Informe o nome do produto: ")
-            quantidade = int(input("Informe a quantidade: "))
-            pousada.registra_consumo(cliente, produto, quantidade)
+            pousada.registra_consumo(cliente)#, produto, quantidade
+            #produto = input("Informe o nome do produto: ")
+            #quantidade = int(input("Informe a quantidade: "))
 
         elif opcao == "8":
             pousada.Salva_dados()

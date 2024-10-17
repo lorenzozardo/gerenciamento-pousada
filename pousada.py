@@ -213,3 +213,35 @@ class Pousada:
         else:
             print(f"Check-in ativo para {cliente} não encontrada.")
             return False
+        
+
+    def registra_consumo(self, cliente):
+
+        reservas_atualizadas = []
+        reserva_encontrada = False
+        
+        with open("reserva.txt", "r") as arquivo:
+            linhas = arquivo.readlines()
+            
+        for linha in linhas:
+            dados = linha.strip().split(";")
+            nome_cliente = dados[2]
+            status = dados[4]
+            
+            if nome_cliente == cliente and status == "I":
+                dados[4] = "O"
+                reserva_encontrada = True
+
+            linha_atualizada = ";".join(dados)+"\n"
+            reservas_atualizadas.append(linha_atualizada)
+        
+        if reserva_encontrada:
+             with open("produto.txt", "r", encoding="utf-8") as f:
+              linhas = f.readlines()
+              for linha in linhas:
+                partes = linha.strip().split(";")  
+                if len(partes) > 1:  
+                    print(partes[1])  
+        else:
+            print(f"Check-in ativo para {cliente} não encontrada.")
+            return False
