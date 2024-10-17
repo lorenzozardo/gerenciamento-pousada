@@ -133,6 +133,11 @@ class Pousada:
         if self.consulta_disponibilidade(data_inicio, quarto):
             nova_reserva = Reserva(data_inicio, data_fim, cliente, quarto, "A")
             self.__reservas.append(nova_reserva)
+            
+            with open("reserva.txt", "a") as arquivo:
+                linha = f"{data_inicio};{data_fim};{cliente};{quarto.numero};A"
+                arquivo.write(linha)
+            
             print("Reserva realizada com sucesso!")
             return True
         
@@ -141,31 +146,88 @@ class Pousada:
 
     # Cancela uma reserva do cliente
     def cancela_reserva(self, cliente: str):
-        for reserva in self.__reservas:
-            if reserva.cliente == cliente and reserva.status == "A":
-                reserva.status = "C"
-                print(f"Reserva de {cliente} cancelada.")
-                return True
-        print(f"Nenhuma reserva ativa encontrada para {cliente}.")
-        return False
+        reservas_atualizadas = []
+        reserva_encontrada = False
+        
+        with open("reserva.txt", "r") as arquivo:
+            linhas = arquivo.readlines()
+            
+        for linha in linhas:
+            dados = linha.strip().split(";")
+            nome_cliente = dados[2]
+            status = dados[4]
+            
+            if nome_cliente == cliente and status == "A":
+                dados[4] = "C"
+                reserva_encontrada = True
+
+            linha_atualizada = ";".join(dados)+"\n"
+            reservas_atualizadas.append(linha_atualizada)
+        
+        if reserva_encontrada:
+            with open("reserva.txt", "w") as arquivo:
+                arquivo.writelines(reservas_atualizadas)
+            print(f"Reserva de {cliente} cancelada com sucesso!")
+            return True
+        else:
+            print(f"Reserva ativa para {cliente} não encontrada.")
+            return False
+        
 
     # Realiza o check-in do cliente se houver uma reserva ativa
     def realiza_checkin(self, cliente: str):
-        for reserva in self.__reservas:
-            if reserva.cliente == cliente and reserva.status == "A":
-                reserva.status = "I"
-                print(f"Check-in realizado para o cliente {cliente}!")
-                return True
+        reservas_atualizadas = []
+        reserva_encontrada = False
+        
+        with open("reserva.txt", "r") as arquivo:
+            linhas = arquivo.readlines()
             
-        print(f"Erro! Cliente {cliente} não possui nenhuma reserva ativa.")
-        return False
+        for linha in linhas:
+            dados = linha.strip().split(";")
+            nome_cliente = dados[2]
+            status = dados[4]
+            
+            if nome_cliente == cliente and status == "A":
+                dados[4] = "I"
+                reserva_encontrada = True
+
+            linha_atualizada = ";".join(dados)+"\n"
+            reservas_atualizadas.append(linha_atualizada)
+        
+        if reserva_encontrada:
+            with open("reserva.txt", "w") as arquivo:
+                arquivo.writelines(reservas_atualizadas)
+            print(f"Check-in de {cliente} realizado com sucesso!")
+            return True
+        else:
+            print(f"Reserva ativa para {cliente} não encontrada.")
+            return False
 
     # Realiza o check-out do cliente e encerra a reserva
     def realiza_checkout(self, cliente: str):
-        for reserva in self.__reservas:
-            if reserva.cliente == cliente and reserva.status == "I":
-                reserva.status = "O"
-                print(f"Check-out do cliente {cliente} realizado com sucesso!")
-                return True
-        print(f"Check-out do cliente {cliente} não pode ser realizado.")
-        return False
+        reservas_atualizadas = []
+        reserva_encontrada = False
+        
+        with open("reserva.txt", "r") as arquivo:
+            linhas = arquivo.readlines()
+            
+        for linha in linhas:
+            dados = linha.strip().split(";")
+            nome_cliente = dados[2]
+            status = dados[4]
+            
+            if nome_cliente == cliente and status == "I":
+                dados[4] = "O"
+                reserva_encontrada = True
+
+            linha_atualizada = ";".join(dados)+"\n"
+            reservas_atualizadas.append(linha_atualizada)
+        
+        if reserva_encontrada:
+            with open("reserva.txt", "w") as arquivo:
+                arquivo.writelines(reservas_atualizadas)
+            print(f"Check-out de {cliente} realizado com sucesso!")
+            return True
+        else:
+            print(f"Reserva ativa para {cliente} não encontrada.")
+            return False
